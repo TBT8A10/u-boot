@@ -56,6 +56,8 @@ struct rockchip_panel_plat {
 	} delay;
 
 	struct rockchip_panel_cmds *on_cmds;
+	struct rockchip_panel_cmds *on_cmds1;
+	struct rockchip_panel_cmds *on_cmds2;
 	struct rockchip_panel_cmds *off_cmds;
 };
 
@@ -65,6 +67,7 @@ struct rockchip_panel_priv {
 	struct udevice *power_supply;
 	struct udevice *backlight;
 	struct gpio_desc enable_gpio;
+	struct gpio_desc enable1_gpio;
 	struct gpio_desc reset_gpio;
 
 	int cmd_type;
@@ -264,15 +267,31 @@ static void panel_simple_prepare(struct rockchip_panel *panel)
 	if (priv->prepared)
 		return;
 
+	mdelay(6);
 	if (priv->power_supply)
 		regulator_set_enable(priv->power_supply, !plat->power_invert);
 
+	mdelay(31);
 	if (dm_gpio_is_valid(&priv->enable_gpio))
 		dm_gpio_set_value(&priv->enable_gpio, 1);
+
+	mdelay(31);
+	if (dm_gpio_is_valid(&priv->enable_gpio))
+		dm_gpio_set_value(&priv->enable_gpio, 0);
+
+	mdelay(41);
+	if (dm_gpio_is_valid(&priv->enable_gpio))
+		dm_gpio_set_value(&priv->enable_gpio, 1);
+
+	if (dm_gpio_is_valid(&priv->enable1_gpio))
+		dm_gpio_set_value(&priv->enable1_gpio, 0);
 
 	if (plat->delay.prepare)
 		mdelay(plat->delay.prepare);
 
+	if (dm_gpio_is_valid(&priv->reset_gpio))
+		dm_gpio_set_value(&priv->reset_gpio, 0);
+	mdelay(31);
 	if (dm_gpio_is_valid(&priv->reset_gpio))
 		dm_gpio_set_value(&priv->reset_gpio, 1);
 
@@ -285,15 +304,19 @@ static void panel_simple_prepare(struct rockchip_panel *panel)
 	if (plat->delay.init)
 		mdelay(plat->delay.init);
 
-	if (plat->on_cmds) {
+	// In the stock uboot, only one command is sent
+	// depending on some kind of variable
+	// From manual testing, our LCD needs this one
+	// I don't know what the other commands are for
+	if (plat->on_cmds2) {
 		if (priv->cmd_type == CMD_TYPE_SPI)
 			ret = rockchip_panel_send_spi_cmds(panel->state,
-							   plat->on_cmds);
+							plat->on_cmds2);
 		else if (priv->cmd_type == CMD_TYPE_MCU)
 			ret = rockchip_panel_send_mcu_cmds(panel->state,
-							   plat->on_cmds);
+							plat->on_cmds2);
 		else
-			ret = rockchip_panel_send_dsi_cmds(dsi, plat->on_cmds);
+			ret = rockchip_panel_send_dsi_cmds(dsi, plat->on_cmds2);
 		if (ret)
 			printf("failed to send on cmds: %d\n", ret);
 	}
@@ -329,6 +352,9 @@ static void panel_simple_unprepare(struct rockchip_panel *panel)
 
 	if (dm_gpio_is_valid(&priv->enable_gpio))
 		dm_gpio_set_value(&priv->enable_gpio, 0);
+
+	if (dm_gpio_is_valid(&priv->enable1_gpio))
+		dm_gpio_set_value(&priv->enable1_gpio, 1);
 
 	if (priv->power_supply)
 		regulator_set_enable(priv->power_supply, plat->power_invert);
@@ -422,12 +448,38 @@ static int rockchip_panel_ofdata_to_platdata(struct udevice *dev)
 		}
 	}
 
+	data = dev_read_prop(dev, "panel-init-sequence1", &len);
+	if (data) {
+		plat->on_cmds1 = calloc(1, sizeof(*plat->on_cmds1));
+		if (!plat->on_cmds1)
+			return -ENOMEM;
+
+		ret = rockchip_panel_parse_cmds(data, len, plat->on_cmds1);
+		if (ret) {
+			printf("failed to parse panel init sequence\n");
+			goto free_on_cmds1;
+		}
+	}
+
+	data = dev_read_prop(dev, "panel-init-sequence2", &len);
+	if (data) {
+		plat->on_cmds2 = calloc(1, sizeof(*plat->on_cmds2));
+		if (!plat->on_cmds2)
+			return -ENOMEM;
+
+		ret = rockchip_panel_parse_cmds(data, len, plat->on_cmds2);
+		if (ret) {
+			printf("failed to parse panel init sequence\n");
+			goto free_on_cmds2;
+		}
+	}
+
 	data = dev_read_prop(dev, "panel-exit-sequence", &len);
 	if (data) {
 		plat->off_cmds = calloc(1, sizeof(*plat->off_cmds));
 		if (!plat->off_cmds) {
 			ret = -ENOMEM;
-			goto free_on_cmds;
+			goto free_on_cmds2;
 		}
 
 		ret = rockchip_panel_parse_cmds(data, len, plat->off_cmds);
@@ -441,6 +493,10 @@ static int rockchip_panel_ofdata_to_platdata(struct udevice *dev)
 
 free_cmds:
 	free(plat->off_cmds);
+free_on_cmds2:
+	free(plat->on_cmds2);
+free_on_cmds1:
+	free(plat->on_cmds1);
 free_on_cmds:
 	free(plat->on_cmds);
 	return ret;
@@ -456,6 +512,13 @@ static int rockchip_panel_probe(struct udevice *dev)
 
 	ret = gpio_request_by_name(dev, "enable-gpios", 0,
 				   &priv->enable_gpio, GPIOD_IS_OUT);
+	if (ret && ret != -ENOENT) {
+		printf("%s: Cannot get enable GPIO: %d\n", __func__, ret);
+		return ret;
+	}
+
+	ret = gpio_request_by_name(dev, "enable1-gpios", 0,
+				   &priv->enable1_gpio, GPIOD_IS_OUT);
 	if (ret && ret != -ENOENT) {
 		printf("%s: Cannot get enable GPIO: %d\n", __func__, ret);
 		return ret;
