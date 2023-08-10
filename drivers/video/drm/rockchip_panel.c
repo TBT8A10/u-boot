@@ -267,19 +267,19 @@ static void panel_simple_prepare(struct rockchip_panel *panel)
 	if (priv->prepared)
 		return;
 
-	mdelay(6);
+	mdelay(5);
 	if (priv->power_supply)
 		regulator_set_enable(priv->power_supply, !plat->power_invert);
 
-	mdelay(31);
+	mdelay(30);
 	if (dm_gpio_is_valid(&priv->enable_gpio))
 		dm_gpio_set_value(&priv->enable_gpio, 1);
 
-	mdelay(31);
+	mdelay(30);
 	if (dm_gpio_is_valid(&priv->enable_gpio))
 		dm_gpio_set_value(&priv->enable_gpio, 0);
 
-	mdelay(41);
+	mdelay(40);
 	if (dm_gpio_is_valid(&priv->enable_gpio))
 		dm_gpio_set_value(&priv->enable_gpio, 1);
 
@@ -291,7 +291,7 @@ static void panel_simple_prepare(struct rockchip_panel *panel)
 
 	if (dm_gpio_is_valid(&priv->reset_gpio))
 		dm_gpio_set_value(&priv->reset_gpio, 0);
-	mdelay(31);
+	mdelay(30);
 	if (dm_gpio_is_valid(&priv->reset_gpio))
 		dm_gpio_set_value(&priv->reset_gpio, 1);
 
