@@ -1,6 +1,6 @@
 ### Information
-Building an old revision of Rockchip's U-Boot, I was able to obtain a binary very similar to the stock one. However, Incar made modifications to the code (e.g. on the LCD driver) to make it compatible with the tablet. \
-Currently, this U-Boot loads Android without any issues. Initially the LCD didn't work but with some changes now it does. However, as of now there's an issue which makes the screen not turn on again after turning it off.
+Building an old revision of Rockchip's U-Boot, I was able to obtain a binary very similar to the stock one.
+Currently, it boots Android without any visible issues.
 
 ### Build process
 * Download [Linaro 6.3.1 toolchain](https://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/aarch64-linux-gnu/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.xz)

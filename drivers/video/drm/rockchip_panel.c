@@ -304,10 +304,9 @@ static void panel_simple_prepare(struct rockchip_panel *panel)
 	if (plat->delay.init)
 		mdelay(plat->delay.init);
 
-	// In the stock uboot, only one command is sent
-	// depending on some kind of variable
-	// From manual testing, our LCD needs this one
-	// I don't know what the other commands are for
+	// In the stock uboot, the panel ID is retrieved and
+	// the respective on_cmd is executed. My tablet (TBT8A10)
+	// uses on_cmds2 so I'm hardcoding it for now
 	if (plat->on_cmds2) {
 		if (priv->cmd_type == CMD_TYPE_SPI)
 			ret = rockchip_panel_send_spi_cmds(panel->state,
@@ -320,6 +319,9 @@ static void panel_simple_prepare(struct rockchip_panel *panel)
 		if (ret)
 			printf("failed to send on cmds: %d\n", ret);
 	}
+
+	// The Android kernel reads the panel ID from bootargs
+	env_update("bootargs", "yk_mipi_lcd2");
 
 	priv->prepared = true;
 }
