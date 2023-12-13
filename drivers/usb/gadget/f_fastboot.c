@@ -546,6 +546,13 @@ int __weak fb_set_reboot_flag(void)
 	return -ENOSYS;
 }
 
+#ifdef CONFIG_CMD_ROCKUSB
+int __weak fb_set_rockusb_reboot_flag(void)
+{
+	return -ENOSYS;
+}
+#endif
+
 static void cb_reboot(struct usb_ep *ep, struct usb_request *req)
 {
 	char *cmd = req->buf;
@@ -2147,6 +2154,15 @@ static void cb_oem(struct usb_ep *ep, struct usb_request *req)
 		fastboot_tx_write_str("OKAY");
 #else
 		fastboot_tx_write_str("FAILnot implemented");
+#endif
+#ifdef CONFIG_CMD_ROCKUSB
+	} else if (strncmp("rockusb", cmd + 4, 7) == 0) {
+		if (fb_set_rockusb_reboot_flag()) {
+			fastboot_tx_write_str("FAILCannot set reboot flag");
+			return;
+		}
+		fastboot_func->in_req->complete = compl_do_reset;
+		fastboot_tx_write_str("OKAY");
 #endif
 	} else {
 		fastboot_tx_write_str("FAILunknown oem command");

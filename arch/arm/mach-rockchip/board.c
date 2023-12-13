@@ -175,6 +175,15 @@ int fb_set_reboot_flag(void)
 
 	return 0;
 }
+#if defined(CONFIG_CMD_ROCKUSB)
+int fb_set_rockusb_reboot_flag(void)
+{
+	printf("Setting reboot to rockusb flag ...\n");
+	writel(BOOT_LOADER, CONFIG_ROCKCHIP_BOOT_MODE_REG);
+
+	return 0;
+}
+#endif
 #endif
 
 #ifdef CONFIG_ROCKCHIP_USB_BOOT
