@@ -1,6 +1,23 @@
 ### Information
 Building an old revision of Rockchip's U-Boot, I was able to obtain a binary very similar to the stock one.
-Currently, it boots Android without any visible issues.
+
+### Modifications
+* Removed read limit on LOADER mode
+* Fastboot mode can be entered by pressing volume down
+* New fastboot commands:
+    * `oem rockusb`: Reboots into LOADER (rockusb) mode
+
+### Known issues
+* The LCD may not turn on as some tablets may come with different LCDs. If that's the case, let me know
+
+### Hotkeys
+* With the tablet OFF:
+    * With USB disconnected:
+        * `Enter Recovery:` Power + Volume Up
+        * `Enter Fastboot:` Power + Volume Down
+    * With USB connected:
+        * `Enter LOADER mode:` Volume Up
+        * `Enter Fastboot:` Volume Down
 
 ### Build process
 * Download [Linaro 6.3.1 toolchain](https://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/aarch64-linux-gnu/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.xz)
