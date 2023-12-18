@@ -2,6 +2,7 @@
 Building an old revision of Rockchip's U-Boot, I was able to obtain a binary very similar to the stock one.
 
 ### Modifications
+* Logs are printed on the LCD
 * Removed read limit on LOADER mode
 * Fastboot mode can be entered by pressing volume down
 * New fastboot commands:
