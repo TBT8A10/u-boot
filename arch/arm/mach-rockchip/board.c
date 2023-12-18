@@ -313,7 +313,8 @@ int board_late_init(void)
 #ifdef CONFIG_DM_CHARGE_DISPLAY
 	charge_display();
 #endif
-#ifdef CONFIG_DRM_ROCKCHIP
+#if defined(CONFIG_DRM_ROCKCHIP) && \
+		!(CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER)
 	rockchip_show_logo();
 #endif
 	env_fixup();

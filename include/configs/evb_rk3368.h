@@ -13,8 +13,8 @@
 
 #undef ROCKCHIP_DEVICE_SETTINGS
 #define ROCKCHIP_DEVICE_SETTINGS \
-		"stdout=serial,vidconsole\0" \
-		"stderr=serial,vidconsole\0"
+		"stdout=vidconsole\0" \
+		"stderr=vidconsole\0"
 
 #undef CONFIG_BOOTCOMMAND
 #define CONFIG_BOOTCOMMAND RKIMG_BOOTCOMMAND

@@ -128,3 +128,10 @@ config ROCKCHIP_DRM_TVE
 	  Choose this option to enable support for Rockchip TVE.
 	  Rockchip rk322x and rk322xh SoC has TVE can be used, and
 	  say Y to enable TVE driver.
+
+config DRM_ROCKCHIP_VIDEO_FRAMEBUFFER
+	bool "Rockchip Video Framebuffer Support"
+	depends on DRM_ROCKCHIP
+	help
+		If enabled, the display will show the video framebuffer
+		instead of the Rockchip logo.
