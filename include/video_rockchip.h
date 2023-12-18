@@ -10,7 +10,9 @@
 #ifdef CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER
  #define DRM_ROCKCHIP_FB_WIDTH		800
  #define DRM_ROCKCHIP_FB_HEIGHT		1280
- #define DRM_ROCKCHIP_FB_BPP		VIDEO_BPP8
+ /* Setting DRM_ROCKCHIP_FB_SIZE to other than 0 can cause
+ 	issues when booting into android, so set this to 0 */
+ #define DRM_ROCKCHIP_FB_BPP		0
 #else
  #define DRM_ROCKCHIP_FB_WIDTH		0
  #define DRM_ROCKCHIP_FB_HEIGHT		0

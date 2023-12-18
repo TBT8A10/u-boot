@@ -1105,7 +1105,7 @@ void rockchip_show_fbbase(ulong fbbase)
 		s->logo.mem = (char *)fbbase;
 		s->logo.width = DRM_ROCKCHIP_FB_WIDTH;
 		s->logo.height = DRM_ROCKCHIP_FB_HEIGHT;
-		s->logo.bpp = 32;
+		s->logo.bpp = 16;
 		s->logo.ymirror = 0;
 
 		display_logo(s);
@@ -1473,7 +1473,7 @@ static int rockchip_display_probe(struct udevice *dev)
 
 	uc_priv->xsize = DRM_ROCKCHIP_FB_WIDTH;
 	uc_priv->ysize = DRM_ROCKCHIP_FB_HEIGHT;
-	uc_priv->bpix = VIDEO_BPP32;
+	uc_priv->bpix = VIDEO_BPP16;
 
 	#ifdef CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER
 	rockchip_show_fbbase(plat->base);
