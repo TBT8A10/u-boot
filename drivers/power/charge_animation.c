@@ -85,10 +85,8 @@ static int charge_animation_ofdata_to_platdata(struct udevice *dev)
 	struct charge_animation_pdata *pdata = dev_get_platdata(dev);
 
 	/* charge mode */
-	pdata->uboot_charge =
-		dev_read_u32_default(dev, "rockchip,uboot-charge-on", 0);
-	pdata->android_charge =
-		dev_read_u32_default(dev, "rockchip,android-charge-on", 0);
+	pdata->uboot_charge = 1;
+	pdata->android_charge = 0;
 
 	pdata->exit_charge_level =
 		dev_read_u32_default(dev, "rockchip,uboot-exit-charge-level", 0);
@@ -280,7 +278,8 @@ static void autowakeup_timer_uninit(void)
 }
 #endif
 
-#ifdef CONFIG_DRM_ROCKCHIP
+#if defined(CONFIG_DRM_ROCKCHIP) && \
+		!(CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER)
 static void charge_show_bmp(const char *name)
 {
 	rockchip_show_bmp(name);
