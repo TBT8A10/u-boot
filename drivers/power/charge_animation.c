@@ -282,10 +282,8 @@ static void autowakeup_timer_uninit(void)
 static void charge_show_bmp(const char *name)
 {
 #ifdef CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER
-	if (name != NULL) {
-		rockchip_show_fbbase(-1);
+	if (name != NULL)
 		return;
-	}
 #endif
 
 	rockchip_show_bmp(name);
@@ -436,6 +434,9 @@ static int charge_animation_show(struct udevice *dev)
 	int image_num = priv->image_num;
 	bool ever_lowpower_screen_off = false;
 	bool screen_on = true;
+#ifdef CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER
+	bool screen_turned_on = false;
+#endif
 	ulong show_start = 0, charge_start = 0, debug_start = 0;
 	ulong delta;
 	ulong ms = 0, sec = 0;
@@ -670,7 +671,15 @@ show_images:
 			if (old_show_idx != show_idx) {
 				old_show_idx = show_idx;
 				debug("SHOW: %s\n", image[show_idx].name);
+
+#ifdef CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER
+				if (!screen_turned_on) {
+					rockchip_show_fbbase(-1);
+					screen_turned_on = true;
+				}
+#else
 				charge_show_bmp(image[show_idx].name);
+#endif
 			}
 			/* Re-calculate timeout to off screen */
 			if (priv->auto_screen_off_timeout == 0)
@@ -720,6 +729,9 @@ show_images:
 			if (screen_on) {
 				charge_show_bmp(NULL); /* Turn off screen */
 				screen_on = false;
+#ifdef CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER
+				screen_turned_on = false;
+#endif
 				priv->suspend_delay_timeout = get_timer(0);
 			} else {
 				screen_on = true;
