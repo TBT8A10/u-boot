@@ -225,7 +225,7 @@ static int system_suspend_enter(struct udevice *dev)
 		putc('\n');
 	} else {
 		irqs_suspend();
-		printf("\nWfi\n");
+		printf("\nEnter WFI sleep\n");
 		wfi();
 		putc('1');
 		irqs_resume();
@@ -514,7 +514,7 @@ static int charge_animation_show(struct udevice *dev)
 
 /* Give a message warning when CONFIG_IRQ is not enabled */
 #ifdef CONFIG_IRQ
-	printf("Enter U-Boot charging mode\n");
+	printf("Enter U-Boot charging mode - long press power key to exit\n");
 #else
 	printf("Enter U-Boot charging mode(without IRQ)\n");
 #endif
