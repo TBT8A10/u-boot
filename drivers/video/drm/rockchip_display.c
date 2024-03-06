@@ -53,6 +53,9 @@ static LIST_HEAD(logo_cache_list);
 
 static unsigned long memory_start;
 static unsigned long memory_end;
+#ifdef CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER
+static unsigned long plat_base;
+#endif
 
 /*
  * the phy types are used by different connectors in public.
@@ -1099,6 +1102,9 @@ free_header:
 void rockchip_show_fbbase(ulong fbbase)
 {
 	struct display_state *s;
+	
+	if (fbbase == -1)
+		fbbase = plat_base;
 
 	list_for_each_entry(s, &rockchip_display_list, head) {
 		s->logo.mode = ROCKCHIP_DISPLAY_FULLSCREEN;
@@ -1476,7 +1482,8 @@ static int rockchip_display_probe(struct udevice *dev)
 	uc_priv->bpix = VIDEO_BPP16;
 
 	#ifdef CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER
-	rockchip_show_fbbase(plat->base);
+	plat_base = plat->base;
+	rockchip_show_fbbase(plat_base);
 	video_set_flush_dcache(dev, true);
 	#endif
 

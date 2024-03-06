@@ -278,19 +278,29 @@ static void autowakeup_timer_uninit(void)
 }
 #endif
 
-#if defined(CONFIG_DRM_ROCKCHIP) && \
-		!(CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER)
+#ifdef CONFIG_DRM_ROCKCHIP
 static void charge_show_bmp(const char *name)
 {
+#ifdef CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER
+	if (name != NULL) {
+		rockchip_show_fbbase(-1);
+		return;
+	}
+#endif
+
 	rockchip_show_bmp(name);
 }
+#else
+static void charge_show_bmp(const char *name) {}
+#endif
 
+#if defined(CONFIG_DRM_ROCKCHIP) && \
+		!(CONFIG_DRM_ROCKCHIP_VIDEO_FRAMEBUFFER)
 static void charge_show_logo(void)
 {
 	rockchip_show_logo();
 }
 #else
-static void charge_show_bmp(const char *name) {}
 static void charge_show_logo(void) {}
 #endif
 
