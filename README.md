@@ -5,6 +5,8 @@ Building an old revision of Rockchip's U-Boot, I was able to obtain a binary ver
 * Logs are printed on the LCD
 * Removed read limit on LOADER mode
 * Fastboot mode can be entered by pressing volume down
+* Offline charging is now done in U-Boot instead of Android, this is useful because GSIs don't support offline charging.
+    * U-Boot charging also has the advantage of showing battery percentage and information about the charging current & voltage.
 * New fastboot commands:
     * `oem rockusb`: Reboots into LOADER (rockusb) mode
 
