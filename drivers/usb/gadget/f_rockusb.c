@@ -530,94 +530,123 @@ static int rkusb_cmd_process(struct fsg_common *common,
 	}
 
 	switch (common->cmnd[0]) {
-	case RKUSB_TEST_UNIT_READY:
-		*reply = rkusb_do_test_unit_ready(common, bh);
-		rc = RKUSB_RC_FINISHED;
-		break;
+		case RKUSB_TEST_UNIT_READY:
+			printf("RKUSB_TEST_UNIT_READY");
+			*reply = rkusb_do_test_unit_ready(common, bh);
+			rc = RKUSB_RC_FINISHED;
+			break;
 
-	case RKUSB_READ_FLASH_ID:
-		*reply = rkusb_do_read_flash_id(common, bh);
-		rc = RKUSB_RC_FINISHED;
-		break;
+		case RKUSB_READ_FLASH_ID:
+			printf("RKUSB_READ_FLASH_ID");
+			*reply = rkusb_do_read_flash_id(common, bh);
+			rc = RKUSB_RC_FINISHED;
+			break;
 
-	case RKUSB_TEST_BAD_BLOCK:
-		*reply = rkusb_do_test_bad_block(common, bh);
-		rc = RKUSB_RC_FINISHED;
-		break;
+		case RKUSB_TEST_BAD_BLOCK:
+			printf("RKUSB_TEST_BAD_BLOCK\n");
+			*reply = rkusb_do_test_bad_block(common, bh);
+			rc = RKUSB_RC_FINISHED;
+			break;
 
-	case RKUSB_LBA_READ_10:
-		rkusb_fixup_cbwcb(common, bh);
-		common->cmnd[0] = SC_READ_10;
-		common->cmnd[1] = 0; /* Not support */
-		rc = RKUSB_RC_CONTINUE;
-		break;
+		case RKUSB_LBA_READ_10:
+			printf("RKUSB_LBA_READ_10\n");
+			rkusb_fixup_cbwcb(common, bh);
+			common->cmnd[0] = SC_READ_10;
+			common->cmnd[1] = 0; /* Not support */
+			rc = RKUSB_RC_CONTINUE;
+			break;
 
-	case RKUSB_LBA_WRITE_10:
-		rkusb_fixup_cbwcb(common, bh);
-		common->cmnd[0] = SC_WRITE_10;
-		common->cmnd[1] = 0; /* Not support */
-		rc = RKUSB_RC_CONTINUE;
-		break;
+		case RKUSB_LBA_WRITE_10:
+			printf("RKUSB_LBA_WRITE_10\n");
+			rkusb_fixup_cbwcb(common, bh);
+			common->cmnd[0] = SC_WRITE_10;
+			common->cmnd[1] = 0; /* Not support */
+			rc = RKUSB_RC_CONTINUE;
+			break;
 
-	case RKUSB_READ_FLASH_INFO:
-		*reply = rkusb_do_read_flash_info(common, bh);
-		rc = RKUSB_RC_FINISHED;
-		break;
+		case RKUSB_READ_FLASH_INFO:
+			printf("RKUSB_READ_FLASH_INFO\n");
+			*reply = rkusb_do_read_flash_info(common, bh);
+			rc = RKUSB_RC_FINISHED;
+			break;
 
-	case RKUSB_GET_CHIP_VER:
-		*reply = rkusb_do_get_chip_info(common, bh);
-		rc = RKUSB_RC_FINISHED;
-		break;
+		case RKUSB_GET_CHIP_VER:
+			printf("RKUSB_GET_CHIP_VER\n");
+			*reply = rkusb_do_get_chip_info(common, bh);
+			rc = RKUSB_RC_FINISHED;
+			break;
 
-	case RKUSB_LBA_ERASE:
-		*reply = rkusb_do_lba_erase(common, bh);
-		rc = RKUSB_RC_FINISHED;
-		break;
+		case RKUSB_LBA_ERASE:
+			printf("RKUSB_LBA_ERASE\n");
+			*reply = rkusb_do_lba_erase(common, bh);
+			rc = RKUSB_RC_FINISHED;
+			break;
 
 #ifdef CONFIG_ROCKCHIP_VENDOR_PARTITION
-	case RKUSB_VS_WRITE:
-		*reply = rkusb_do_vs_write(common);
-		rc = RKUSB_RC_FINISHED;
-		break;
+		case RKUSB_VS_WRITE:
+			printf("RKUSB_VS_WRITE\n");
+			*reply = rkusb_do_vs_write(common);
+			rc = RKUSB_RC_FINISHED;
+			break;
 
-	case RKUSB_VS_READ:
-		*reply = rkusb_do_vs_read(common);
-		rc = RKUSB_RC_FINISHED;
-		break;
+		case RKUSB_VS_READ:
+			printf("RKUSB_VS_READ\n");
+			*reply = rkusb_do_vs_read(common);
+			rc = RKUSB_RC_FINISHED;
+			break;
 #endif
 
-	case RKUSB_READ_CAPACITY:
-		*reply = rkusb_do_read_capacity(common, bh);
-		rc = RKUSB_RC_FINISHED;
-		break;
+		case RKUSB_READ_CAPACITY:
+			printf("RKUSB_READ_CAPACITY\n");
+			*reply = rkusb_do_read_capacity(common, bh);
+			rc = RKUSB_RC_FINISHED;
+			break;
 
-	case RKUSB_RESET:
-		*reply = rkusb_do_reset(common, bh);
-		rc = RKUSB_RC_FINISHED;
-		break;
+		case RKUSB_RESET:
+			printf("RKUSB_RESET\n");
+			*reply = rkusb_do_reset(common, bh);
+			rc = RKUSB_RC_FINISHED;
+			break;
 
-	case RKUSB_READ_10:
-	case RKUSB_WRITE_10:
-		printf("CMD Not support, pls use new version Tool\n");
-	case RKUSB_SET_DEVICE_ID:
-	case RKUSB_ERASE_10:
-	case RKUSB_WRITE_SPARE:
-	case RKUSB_READ_SPARE:
-	case RKUSB_ERASE_10_FORCE:
-	case RKUSB_GET_VERSION:
-	case RKUSB_ERASE_SYS_DISK:
-	case RKUSB_SDRAM_READ_10:
-	case RKUSB_SDRAM_WRITE_10:
-	case RKUSB_SDRAM_EXECUTE:
-	case RKUSB_LOW_FORMAT:
-	case RKUSB_SET_RESET_FLAG:
-	case RKUSB_SPI_READ_10:
-	case RKUSB_SPI_WRITE_10:
-	case RKUSB_SESSION:
-		/* Fall through */
-	default:
-		rc = RKUSB_RC_UNKNOWN_CMND;
-		break;
+		case RKUSB_READ_10:
+			printf("RKUSB_READ_10");
+		case RKUSB_WRITE_10:
+			printf("CMD Not support, pls use new version Tool");
+		case RKUSB_SET_DEVICE_ID:
+			printf("RKUSB_SET_DEVICE_ID");
+		case RKUSB_ERASE_10:
+			printf("RKUSB_ERASE_10");
+		case RKUSB_WRITE_SPARE:
+			printf("RKUSB_WRITE_SPARE");
+		case RKUSB_READ_SPARE:
+			printf("RKUSB_READ_SPARE");
+		case RKUSB_ERASE_10_FORCE:
+			printf("RKUSB_ERASE_10_FORCE");
+		case RKUSB_GET_VERSION:
+			printf("RKUSB_GET_VERSION");
+		case RKUSB_ERASE_SYS_DISK:
+			printf("RKUSB_ERASE_SYS_DISK");
+		case RKUSB_SDRAM_READ_10:
+			printf("RKUSB_SDRAM_READ_10");
+		case RKUSB_SDRAM_WRITE_10:
+			printf("RKUSB_SDRAM_WRITE_10");
+		case RKUSB_SDRAM_EXECUTE:
+			printf("RKUSB_SDRAM_EXECUTE");
+		case RKUSB_LOW_FORMAT:
+			printf("RKUSB_LOW_FORMAT");
+		case RKUSB_SET_RESET_FLAG:
+			printf("RKUSB_SET_RESET_FLAG");
+		case RKUSB_SPI_READ_10:
+			printf("RKUSB_SPI_READ_10");
+		case RKUSB_SPI_WRITE_10:
+			printf("RKUSB_SPI_WRITE_10");
+		case RKUSB_SESSION:
+			printf("RKUSB_SESSION");
+			/* Fall through */
+		default:
+			printf(": Command not implemented (%d)\n", common->cmnd[0]);
+			rc = RKUSB_RC_UNKNOWN_CMND;
+			break;
 	}
 
 	return rc;

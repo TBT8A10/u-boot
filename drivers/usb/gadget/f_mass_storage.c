@@ -1810,6 +1810,7 @@ static int do_scsi_command(struct fsg_common *common)
 	switch (common->cmnd[0]) {
 
 	case SC_INQUIRY:
+		printf("SC_INQUIRY\n");
 		common->data_size_from_cmnd = common->cmnd[4];
 		reply = check_command(common, 6, DATA_DIR_TO_HOST,
 				      (1<<4), 0,
@@ -1819,6 +1820,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_MODE_SELECT_6:
+		printf("SC_MODE_SELECT_6\n");
 		common->data_size_from_cmnd = common->cmnd[4];
 		reply = check_command(common, 6, DATA_DIR_FROM_HOST,
 				      (1<<1) | (1<<4), 0,
@@ -1828,6 +1830,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_MODE_SELECT_10:
+		printf("SC_MODE_SELECT_10\n");
 		common->data_size_from_cmnd =
 			get_unaligned_be16(&common->cmnd[7]);
 		reply = check_command(common, 10, DATA_DIR_FROM_HOST,
@@ -1838,6 +1841,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_MODE_SENSE_6:
+		printf("SC_MODE_SENSE_6\n");
 		common->data_size_from_cmnd = common->cmnd[4];
 		reply = check_command(common, 6, DATA_DIR_TO_HOST,
 				      (1<<1) | (1<<2) | (1<<4), 0,
@@ -1847,6 +1851,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_MODE_SENSE_10:
+		printf("SC_MODE_SENSE_10\n");
 		common->data_size_from_cmnd =
 			get_unaligned_be16(&common->cmnd[7]);
 		reply = check_command(common, 10, DATA_DIR_TO_HOST,
@@ -1857,6 +1862,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_PREVENT_ALLOW_MEDIUM_REMOVAL:
+		printf("SC_PREVENT_ALLOW_MEDIUM_REMOVAL\n");
 		common->data_size_from_cmnd = 0;
 		reply = check_command(common, 6, DATA_DIR_NONE,
 				      (1<<4), 0,
@@ -1866,6 +1872,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_READ_6:
+		printf("SC_READ_6\n");
 		i = common->cmnd[4];
 		common->data_size_from_cmnd = (i == 0 ? 256 : i) << 9;
 		reply = check_command(common, 6, DATA_DIR_TO_HOST,
@@ -1876,6 +1883,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_READ_10:
+		printf("SC_READ_10\n");
 		common->data_size_from_cmnd =
 				get_unaligned_be16(&common->cmnd[7]) << 9;
 		reply = check_command(common, 10, DATA_DIR_TO_HOST,
@@ -1886,6 +1894,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_READ_12:
+		printf("SC_READ_12\n");
 		common->data_size_from_cmnd =
 				get_unaligned_be32(&common->cmnd[6]) << 9;
 		reply = check_command(common, 12, DATA_DIR_TO_HOST,
@@ -1896,6 +1905,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_READ_CAPACITY:
+		printf("SC_READ_CAPACITY\n");
 		common->data_size_from_cmnd = 8;
 		reply = check_command(common, 10, DATA_DIR_TO_HOST,
 				      (0xf<<2) | (1<<8), 1,
@@ -1905,6 +1915,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_READ_HEADER:
+		printf("SC_READ_HEADER\n");
 		if (!common->luns[common->lun].cdrom)
 			goto unknown_cmnd;
 		common->data_size_from_cmnd =
@@ -1917,6 +1928,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_READ_TOC:
+		printf("SC_READ_TOC\n");
 		if (!common->luns[common->lun].cdrom)
 			goto unknown_cmnd;
 		common->data_size_from_cmnd =
@@ -1929,6 +1941,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_READ_FORMAT_CAPACITIES:
+		printf("SC_READ_FORMAT_CAPACITIES\n");
 		common->data_size_from_cmnd =
 			get_unaligned_be16(&common->cmnd[7]);
 		reply = check_command(common, 10, DATA_DIR_TO_HOST,
@@ -1939,6 +1952,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_REQUEST_SENSE:
+		printf("SC_REQUEST_SENSE\n");
 		common->data_size_from_cmnd = common->cmnd[4];
 		reply = check_command(common, 6, DATA_DIR_TO_HOST,
 				      (1<<4), 0,
@@ -1948,6 +1962,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_START_STOP_UNIT:
+		printf("SC_START_STOP_UNIT\n");
 		common->data_size_from_cmnd = 0;
 		reply = check_command(common, 6, DATA_DIR_NONE,
 				      (1<<1) | (1<<4), 0,
@@ -1957,6 +1972,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_SYNCHRONIZE_CACHE:
+		printf("SC_SYNCHRONIZE_CACHE\n");
 		common->data_size_from_cmnd = 0;
 		reply = check_command(common, 10, DATA_DIR_NONE,
 				      (0xf<<2) | (3<<7), 1,
@@ -1966,6 +1982,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_TEST_UNIT_READY:
+		printf("SC_TEST_UNIT_READY\n");
 		common->data_size_from_cmnd = 0;
 		reply = check_command(common, 6, DATA_DIR_NONE,
 				0, 1,
@@ -1975,6 +1992,7 @@ static int do_scsi_command(struct fsg_common *common)
 	/* Although optional, this command is used by MS-Windows.  We
 	 * support a minimal version: BytChk must be 0. */
 	case SC_VERIFY:
+		printf("SC_VERIFY\n");
 		common->data_size_from_cmnd = 0;
 		reply = check_command(common, 10, DATA_DIR_NONE,
 				      (1<<1) | (0xf<<2) | (3<<7), 1,
@@ -1984,6 +2002,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_WRITE_6:
+		printf("SC_WRITE_6\n");
 		i = common->cmnd[4];
 		common->data_size_from_cmnd = (i == 0 ? 256 : i) << 9;
 		reply = check_command(common, 6, DATA_DIR_FROM_HOST,
@@ -1994,6 +2013,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_WRITE_10:
+		printf("SC_WRITE_10\n");
 		common->data_size_from_cmnd =
 				get_unaligned_be16(&common->cmnd[7]) << 9;
 		reply = check_command(common, 10, DATA_DIR_FROM_HOST,
@@ -2004,6 +2024,7 @@ static int do_scsi_command(struct fsg_common *common)
 		break;
 
 	case SC_WRITE_12:
+		printf("SC_WRITE_12\n");
 		common->data_size_from_cmnd =
 				get_unaligned_be32(&common->cmnd[6]) << 9;
 		reply = check_command(common, 12, DATA_DIR_FROM_HOST,
